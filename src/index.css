@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .input {
+    @apply w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-emerald-400;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Rubik', system-ui, sans-serif;
+  background-color: #0b1220;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(16, 185, 129, 0.08), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(217, 70, 239, 0.06), transparent 40%);
+}
+
+.card-tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+.foil-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  background-image: repeating-linear-gradient(
+    115deg,
+    rgba(255, 0, 128, 0.5) 0%,
+    rgba(255, 200, 0, 0.5) 10%,
+    rgba(0, 255, 200, 0.5) 20%,
+    rgba(0, 130, 255, 0.5) 30%,
+    rgba(200, 0, 255, 0.5) 40%,
+    rgba(255, 0, 128, 0.5) 50%
+  );
+  background-size: 200% 200%;
+}
+
+.foil-holo:hover .foil-overlay,
+.foil-holo:focus-within .foil-overlay {
+  opacity: 0.55;
+}
+
+.foil-holo-strong .foil-overlay {
+  opacity: 0.35;
+  mix-blend-mode: color-dodge;
+}
+
+.foil-holo-strong:hover .foil-overlay,
+.foil-holo-strong:focus-within .foil-overlay {
+  opacity: 0.8;
+}
+
+.foil-sheen .sheen-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.foil-sheen .sheen-overlay::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0.35) 55%,
+    transparent 100%
+  );
+  transform: translateX(-150%) rotate(8deg);
+  transition: transform 0.6s ease;
+}
+
+.foil-sheen:hover .sheen-overlay::after,
+.foil-sheen:focus-within .sheen-overlay::after {
+  transform: translateX(250%) rotate(8deg);
+  transition: transform 0.9s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-tilt {
+    transition: none;
+  }
+  .foil-overlay,
+  .sheen-overlay::after {
+    transition: none !important;
+  }
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 999px;
+}
