@@ -34,7 +34,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Plant.id expects the raw base64 payload, not a full "data:image/jpeg;base64,..." data URL.
+  const mimePrefix = image.includes(',') ? image.slice(0, image.indexOf(',')) : '(no data URL prefix)';
   const base64Image = image.includes(',') ? image.split(',')[1] : image;
+  console.log(
+    `identify request: mime="${mimePrefix}" base64Length=${base64Image.length} base64Prefix="${base64Image.slice(0, 16)}"`
+  );
 
   const apiKey = process.env.PLANT_ID_API_KEY;
   if (!apiKey) {
