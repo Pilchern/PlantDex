@@ -33,6 +33,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
+  // Plant.id expects the raw base64 payload, not a full "data:image/jpeg;base64,..." data URL.
+  const base64Image = image.includes(',') ? image.split(',')[1] : image;
+
   const apiKey = process.env.PLANT_ID_API_KEY;
   if (!apiKey) {
     const draft = findCareProfile('', '', 0, null);
@@ -55,7 +58,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           'Api-Key': apiKey,
         },
         body: JSON.stringify({
-          images: [image],
+          images: [base64Image],
           similar_images: false,
         }),
       }
@@ -63,6 +66,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!plantIdRes.ok) {
       const text = await plantIdRes.text();
+      console.error(`Plant.id identification error ${plantIdRes.status}:`, text.slice(0, 2000));
       const draft = findCareProfile('', '', 0, null);
       res.status(200).json({
         draft,
@@ -103,6 +107,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })),
     });
   } catch (err) {
+    console.error('Plant.id identification request failed:', err);
     const draft = findCareProfile('', '', 0, null);
     res.status(200).json({
       draft,
