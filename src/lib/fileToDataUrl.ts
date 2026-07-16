@@ -1,15 +1,18 @@
 // Normalizes any browser-renderable image (including iPhone HEIC photos, which
 // Safari can display but identification APIs generally can't decode) into a
-// real JPEG data URL by drawing it through a canvas and re-encoding.
+// real, size-capped JPEG data URL by drawing it through a canvas and re-encoding.
+const MAX_DIMENSION = 1600;
+
 export function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const objectUrl = URL.createObjectURL(file);
     const img = new Image();
 
     img.onload = () => {
+      const scale = Math.min(1, MAX_DIMENSION / Math.max(img.naturalWidth, img.naturalHeight));
       const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
+      canvas.width = Math.round(img.naturalWidth * scale);
+      canvas.height = Math.round(img.naturalHeight * scale);
       const ctx = canvas.getContext('2d');
       URL.revokeObjectURL(objectUrl);
 
@@ -18,8 +21,8 @@ export function fileToDataUrl(file: File): Promise<string> {
         return;
       }
 
-      ctx.drawImage(img, 0, 0);
-      resolve(canvas.toDataURL('image/jpeg', 0.92));
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', 0.85));
     };
 
     img.onerror = () => {
