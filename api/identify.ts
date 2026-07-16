@@ -75,7 +75,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(200).json({
         draft,
         suggestions: [],
-        warning: `Identification service returned an error (${plantIdRes.status}). Fill in the card manually below.`,
+        warning: `Identification service returned an error (${plantIdRes.status}): ${text.slice(0, 300)}`,
         detail: text.slice(0, 500),
       });
       return;
@@ -111,13 +111,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })),
     });
   } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
     console.error('Plant.id identification request failed:', err);
     const draft = findCareProfile('', '', 0, null);
     res.status(200).json({
       draft,
       suggestions: [],
-      warning: 'Identification request failed. Fill in the card manually below.',
-      detail: err instanceof Error ? err.message : String(err),
+      warning: `Identification request failed: ${detail}`,
+      detail,
     });
   }
 }
