@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { findCareProfile, guessCategoryFromTaxonomy } from '../src/lib/careProfiles';
+import { findCareProfile, guessCategoryFromTaxonomy } from '../src/lib/careProfiles.js';
 
 interface PlantIdSuggestion {
   name: string;
