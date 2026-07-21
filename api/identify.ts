@@ -63,7 +63,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         },
         body: JSON.stringify({
           images: [base64Image],
-          similar_images: false,
         }),
       }
     );
