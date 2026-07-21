@@ -27,7 +27,16 @@ export function fileToDataUrl(file: File): Promise<string> {
 
     img.onerror = () => {
       URL.revokeObjectURL(objectUrl);
-      fallbackToRawDataUrl(file, resolve, reject);
+      // The browser couldn't decode this image at all (most commonly a HEIC/HEIF
+      // photo opened outside Safari/macOS, which lack a native HEIC decoder).
+      // Sending the raw undecoded bytes here would just fail identically at
+      // Plant.id, so fail fast with an actionable message instead of masking it.
+      reject(
+        new Error(
+          "This photo couldn't be read by your browser. HEIC/HEIF photos from an iPhone " +
+            'often need Safari, or convert the file to JPG/PNG first and re-upload.'
+        )
+      );
     };
 
     img.src = objectUrl;

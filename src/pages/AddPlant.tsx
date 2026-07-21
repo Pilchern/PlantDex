@@ -74,7 +74,9 @@ export default function AddPlant() {
       setNickname(json.draft.common_name || '');
     } catch (err) {
       setDraft(EMPTY_DRAFT);
-      setWarning('Could not reach the identification service. Fill in the card manually below.');
+      setWarning(
+        err instanceof Error ? err.message : 'Could not reach the identification service. Fill in the card manually below.'
+      );
     } finally {
       setIdentifying(false);
     }
